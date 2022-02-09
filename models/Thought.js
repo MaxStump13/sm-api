@@ -1,7 +1,7 @@
 
 const {Schema, model, Types} = require('mongoose');
 
-const reactionsSchema = new Schema({
+const reactionSchema = new Schema({
 	reactionId: {
 		type: Schema.Types.ObjectId,
 		default: () => new Types.ObjectId(),
@@ -20,13 +20,14 @@ const reactionsSchema = new Schema({
 		type: Date,
 		default: Date.now,
 		// maybe include moment for formatting?
-	},
+	}},
+    {
 	toJSON: {
 		virtuals: true,
 		getters: true,
-	},
-});
-const thoughtsSchema = new Schema({
+	}},
+);
+const thoughtSchema = new Schema({
     thoughtText: {
         type: String,
         required: true,
@@ -46,17 +47,19 @@ const thoughtsSchema = new Schema({
     },
     reactions: [
         // array of nested docs from reactionSchema
-        reactionsSchema
-    ],
+        reactionSchema
+    ]},
+    {
     toJSON: {
         virtuals: true,
         getters: true
     },
     id: false
-})
-thoughtsSchema.virtual("reactionCount").get(function () {
+    }
+);
+thoughtSchema.virtual("reactionCount").get(function () {
 	return this.reactions.length;
 });
-const Thoughts = model("thought", thoughtsSchema);
+const Thought = model("thought", thoughtSchema);
 
-module.exports = Thoughts;
+module.exports = Thought;

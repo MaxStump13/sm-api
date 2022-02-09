@@ -22,7 +22,9 @@ const userSchema = new Schema({
 		// array of _id referencing User model
 		type: Schema.Types.ObjectId,
 		ref: 'user'
-	}],
+	}]
+	},
+	{
 	toJSON:{
 		virtuals: true,
 		getters: true
