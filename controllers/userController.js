@@ -9,7 +9,7 @@ module.exports = {
 	},
     // thoughts and friends data in populate
 	getSingleUser(req, res) {
-        console.log(req.params.userId);
+        // console.log(req.params.userId);
 		User.findOne({ _id: req.params.userId })
             .populate('thoughts')
             .populate('friends')
@@ -51,8 +51,9 @@ module.exports = {
         User.findOneAndDelete({_id: req.params.userId})
         .then((user)=>{
             !user
-				? res.status(404).json({ message: "No user with that ID" })
+				? (res.status(404).json({ message: "No user with that ID" }), console.log(`${user}`))
 				: res.json(user)
+            
         })
         .catch((err) => res.status(500).json(err));
 
@@ -60,14 +61,20 @@ module.exports = {
     addFriend(req, res){
         User.findOneAndUpdate(
             {_id: req.params.userId},
-            {$push: {friends: req.params.friendId}},
+            {$addToSet: {friends: req.params.friendId}},
             {new: true}
         ).then((user)=>{
             res.json(user)
         }).catch((err)=> res.status(500).json(err));
     },
     deleteFriend(req, res){
-
+        User.findOneAndUpdate(
+            {_id: req.params.userId},
+            {$pull: {friends: req.params.friendId}},
+            {new: true, runValidators:true}
+        ).then((user)=>{
+            res.json(user)
+        }).catch((err)=> res.status(500).json(err));
     },
     
 };
